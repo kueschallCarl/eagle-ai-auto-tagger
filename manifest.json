@@ -1,0 +1,15 @@
+{
+    "id": "21a3ed69-901d-488f-8a37-0c550b16fd01",
+    "version": "1.0.0",
+    "platform": "all",
+    "arch": "all",
+    "name": "AI Auto-Tagger",
+    "logo": "/logo.png",
+    "keywords": ["ai", "tagging", "vision"],
+    "devTools": false,
+    "main": {
+        "url": "index.html",
+        "width": 580,
+        "height": 720
+    }
+}

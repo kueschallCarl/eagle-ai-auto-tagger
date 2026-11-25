@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.eagleplugin
+
+# TypeScript
+*.js.map
+*.tsbuildinfo
+
+# Models (large ONNX files - download separately)
+models/
+
+# Cache files
+.cache/
+ref_cache*.json
+embedding_cache*.json
+*.cache
+
+# Debug output
+debug/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Test coverage
+coverage/

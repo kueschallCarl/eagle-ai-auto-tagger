@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #FAF9F5;
+            min-height: 100vh;
+            padding: 20px;
+            color: #141413;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 540px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #E8E6DC;
+        }
+        .header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #141413;
+            flex: 1;
+            letter-spacing: -0.3px;
+        }
+        .header .badge {
+            font-size: 10px;
+            background: #E8E6DC;
+            color: #141413;
+            padding: 3px 9px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        /* Form elements */
+        .section { margin-bottom: 16px; }
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #B0AEA5;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        select, input[type="text"], input[type="password"], input[type="number"], textarea {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #E8E6DC;
+            border-radius: 6px;
+            font-size: 13px;
+            background: #fff;
+            color: #141413;
+            transition: border-color 0.2s ease;
+        }
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #D97757;
+        }
+        textarea { resize: vertical; min-height: 54px; }
+        .row { display: flex; gap: 12px; }
+        .row > .section { flex: 1; }
+
+        /* API key with toggle */
+        .key-row { display: flex; gap: 8px; }
+        .key-row input { flex: 1; }
+        .key-toggle {
+            background: #E8E6DC;
+            border: none;
+            color: #141413;
+            border-radius: 6px;
+            padding: 0 12px;
+            cursor: pointer;
+            font-size: 12px;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+        .key-toggle:hover { background: #dbd9cf; }
+
+        /* Tags */
+        .tag-input-row { display: flex; gap: 8px; }
+        .tag-input-row input { flex: 1; }
+        .tag-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .tag-pill {
+            background: #E8E6DC;
+            border: none;
+            border-radius: 14px;
+            padding: 4px 11px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #141413;
+            font-weight: 500;
+        }
+        .tag-pill .remove {
+            cursor: pointer;
+            color: #B0AEA5;
+            font-size: 14px;
+            line-height: 1;
+        }
+        .tag-pill .remove:hover { color: #C15F3C; }
+
+        /* Buttons */
+        button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-primary {
+            background: #D97757;
+            color: #fff;
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .btn-primary:hover { background: #C15F3C; transform: translateY(-1px); }
+        .btn-primary:disabled {
+            background: #E8E6DC;
+            color: #B0AEA5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-small {
+            background: #E8E6DC;
+            color: #141413;
+            font-weight: 500;
+        }
+        .btn-small:hover { background: #dbd9cf; }
+        .btn-small.btn-danger {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .btn-small.btn-danger:hover {
+            background: #ffcdd2;
+        }
+        .btn-stop {
+            background: #C15F3C;
+            color: #fff;
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+        .btn-stop:hover { background: #a84e30; }
+        .btn-secondary {
+            background: #6A9BCC;
+            color: #fff;
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .btn-secondary:hover { background: #5889b8; transform: translateY(-1px); }
+        .btn-secondary:disabled {
+            background: #E8E6DC;
+            color: #B0AEA5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .model-hint { font-size: 10px; color: #B0AEA5; margin-top: 4px; }
+
+        /* Confirm panel */
+        .confirm-panel {
+            margin-top: 18px;
+            padding: 16px;
+            background: #E8E6DC;
+            border-radius: 10px;
+            display: none;
+        }
+        .confirm-panel.active { display: block; }
+        .confirm-panel .confirm-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #141413;
+            margin-bottom: 8px;
+        }
+        .confirm-panel .confirm-list {
+            font-size: 12px;
+            color: #141413;
+            margin-bottom: 12px;
+            max-height: 100px;
+            overflow-y: auto;
+            background: #FAF9F5;
+            border-radius: 6px;
+            padding: 8px 10px;
+        }
+        .confirm-panel .confirm-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .confirm-panel .confirm-actions button { flex: 1; }
+
+        /* Progress */
+        .progress-panel {
+            margin-top: 18px;
+            padding: 16px;
+            background: #E8E6DC;
+            border-radius: 10px;
+            display: none;
+        }
+        .progress-panel.active { display: block; }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .progress-header .count {
+            font-size: 13px;
+            font-weight: 600;
+            color: #141413;
+        }
+        .progress-header .speed {
+            font-size: 11px;
+            color: #B0AEA5;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: #FAF9F5;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #DA7756, #C15F3C);
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 3px;
+        }
+        .progress-status {
+            font-size: 11px;
+            color: #B0AEA5;
+            margin-top: 8px;
+        }
+
+        /* Summary */
+        .summary-panel {
+            margin-top: 18px;
+            padding: 18px;
+            background: #E8E6DC;
+            border-radius: 10px;
+            display: none;
+        }
+        .summary-panel.active { display: block; }
+        .summary-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #141413;
+            margin-bottom: 12px;
+        }
+        .summary-stats {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .stat-box {
+            flex: 1;
+            text-align: center;
+            padding: 10px 8px;
+            background: #FAF9F5;
+            border-radius: 8px;
+        }
+        .stat-box .number {
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .stat-box .label {
+            font-size: 10px;
+            color: #B0AEA5;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+        .stat-box.success .number { color: #788C5D; }
+        .stat-box.errors .number { color: #C15F3C; }
+        .stat-box.skipped .number { color: #D97757; }
+        .summary-tags-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #B0AEA5;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .tag-cloud .cloud-tag {
+            background: #FAF9F5;
+            border-radius: 12px;
+            padding: 4px 10px;
+            font-size: 11px;
+            color: #141413;
+            font-weight: 500;
+        }
+        .tag-cloud .cloud-tag .tag-count {
+            color: #D97757;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+        .summary-time {
+            font-size: 11px;
+            color: #B0AEA5;
+            margin-top: 12px;
+            text-align: right;
+        }
+
+        /* Log */
+        .log-section { margin-top: 20px; }
+        .log-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            color: #B0AEA5;
+            margin-bottom: 6px;
+            user-select: none;
+        }
+        .log-toggle:hover { color: #141413; }
+        .log-toggle .arrow { transition: transform 0.2s ease; }
+        .log-toggle.open .arrow { transform: rotate(90deg); }
+        .log-content {
+            display: none;
+            gap: 12px;
+        }
+        .log-content.open {
+            display: flex;
+        }
+        .current-item-preview {
+            flex-shrink: 0;
+            width: 120px;
+            background: #141413;
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .current-item-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            background: #2a2a28;
+        }
+        .current-item-info {
+            width: 100%;
+            text-align: center;
+        }
+        .current-item-name {
+            font-size: 10px;
+            color: #E8E6DC;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 104px;
+        }
+        .current-item-status {
+            font-size: 9px;
+            color: #B0AEA5;
+            margin-top: 2px;
+        }
+        .current-item-status.processing { color: #F6C243; }
+        .current-item-status.success { color: #4CAF50; }
+        .current-item-status.skipped { color: #9E9E9E; }
+        .current-item-status.error { color: #f44336; }
+        #logArea {
+            flex: 1;
+            background: #141413;
+            color: #B0AEA5;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            max-height: 140px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        /* Presets */
+        .preset-section {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #E8E6DC;
+        }
+        .preset-row {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+        }
+        .preset-row select { flex: 1; }
+        .preset-actions {
+            display: flex;
+            gap: 4px;
+        }
+        .preset-actions button {
+            padding: 8px 10px;
+            font-size: 12px;
+            background: #E8E6DC;
+            color: #141413;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        .preset-actions button:hover { background: #dbd9cf; }
+        .preset-actions .btn-save-preset { background: #D97757; color: #fff; }
+        .preset-actions .btn-save-preset:hover { background: #C15F3C; }
+        .preset-actions .btn-delete-preset { color: #C15F3C; }
+        .preset-name-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            align-items: stretch;
+        }
+        .preset-name-row input { flex: 1; }
+
+        /* Recognition section */
+        .recognition-section {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #E8E6DC;
+        }
+        .recognition-section > label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #141413;
+            margin-bottom: 12px;
+            text-transform: none;
+        }
+        .ref-folder-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .ref-folder-row input { flex: 1; }
+        .ref-status {
+            font-size: 11px;
+            color: #B0AEA5;
+            margin-bottom: 10px;
+            padding: 6px 10px;
+            background: #E8E6DC;
+            border-radius: 6px;
+        }
+        .ref-status.loaded { color: #788C5D; }
+        .ref-status.error { color: #C15F3C; }
+        /* Advanced settings toggle */
+        .advanced-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            color: #B0AEA5;
+            margin-bottom: 8px;
+            user-select: none;
+            padding: 6px 0;
+        }
+        .advanced-toggle:hover { color: #141413; }
+        .advanced-toggle .arrow {
+            transition: transform 0.2s ease;
+            font-size: 10px;
+        }
+        .advanced-toggle.open .arrow { transform: rotate(90deg); }
+
+        /* Advanced settings panel */
+        .advanced-panel {
+            display: none;
+            background: #F5F4F0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .advanced-panel.open { display: block; }
+
+        .advanced-row {
+            margin-bottom: 12px;
+        }
+        .advanced-row:last-child { margin-bottom: 0; }
+        .advanced-row label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #141413;
+            margin-bottom: 4px;
+            text-transform: none;
+        }
+        .advanced-row .adv-label {
+            font-weight: 600;
+        }
+        .advanced-row .adv-value {
+            color: #D97757;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .advanced-row input[type="range"] {
+            width: 100%;
+            margin: 4px 0;
+        }
+        .advanced-row .adv-hint {
+            font-size: 10px;
+            color: #B0AEA5;
+            display: block;
+        }
+
+        /* Mode indicator badges */
+        .mode-badge {
+            display: inline-block;
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-left: 6px;
+        }
+        .mode-badge.ensemble { background: #788C5D; color: #fff; }
+        .mode-badge.clip { background: #6A9BCC; color: #fff; }
+        .mode-badge.face { background: #D97757; color: #fff; }
+
+        .recognition-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .recognition-buttons button { flex: 1; }
+        .ref-progress {
+            margin-top: 10px;
+            display: none;
+        }
+        .ref-progress.active { display: block; }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-60px);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+            max-width: 90%;
+            text-align: center;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        .toast.success { background: #788C5D; color: #FAF9F5; }
+        .toast.error { background: #C15F3C; color: #FAF9F5; }
+        .toast.info { background: #6A9BCC; color: #FAF9F5; }
+
+        /* Ignore tags input */
+        .ignore-tags-input {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .ignore-tags-input input {
+            flex: 1;
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+        .ignore-tag-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 6px;
+        }
+        .ignore-tag-pills .tag-pill {
+            background: #C15F3C;
+            color: #fff;
+            font-size: 10px;
+            padding: 3px 8px;
+        }
+        .ignore-tag-pills .tag-pill .remove {
+            color: rgba(255,255,255,0.7);
+        }
+        .ignore-tag-pills .tag-pill .remove:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="toast" id="toast"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>AI Auto-Tagger</h1>
+            <span class="badge" id="providerBadge">OpenRouter</span>
+        </div>
+
+        <div class="preset-section">
+            <label>Preset</label>
+            <div class="preset-row">
+                <select id="presetSelect">
+                    <option value="">-- No preset --</option>
+                </select>
+                <div class="preset-actions">
+                    <button class="btn-save-preset" id="savePresetBtn" title="Save current settings as preset">Save</button>
+                    <button class="btn-delete-preset" id="deletePresetBtn" title="Delete selected preset">Del</button>
+                </div>
+            </div>
+            <div class="preset-name-row" id="presetNameRow" style="display:none">
+                <input type="text" id="presetNameInput" placeholder="Preset name...">
+                <button class="btn-small" id="presetNameConfirm">OK</button>
+                <button class="btn-small" id="presetNameCancel">Cancel</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="section">
+                <label for="provider">Provider</label>
+                <select id="provider">
+                    <option value="openrouter">OpenRouter</option>
+                    <option value="groq">Groq</option>
+                </select>
+            </div>
+            <div class="section">
+                <label for="batchSize">Batch Size</label>
+                <input type="number" id="batchSize" value="5" min="1" max="10">
+            </div>
+        </div>
+
+        <div class="section">
+            <label for="apiKey">API Key</label>
+            <div class="key-row">
+                <input type="password" id="apiKey" placeholder="Enter your API key">
+                <button class="key-toggle" id="keyToggle">Show</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <label for="model">Model Override</label>
+            <input type="text" id="model" placeholder="Leave blank for default">
+            <div class="model-hint" id="modelHint">Default: nvidia/nemotron-nano-12b-v2-vl:free</div>
+        </div>
+
+        <div class="section">
+            <label for="customPrompt">Custom Instructions</label>
+            <textarea id="customPrompt" placeholder="e.g. Focus on wildlife, Tag by color palette, Identify art style..."></textarea>
+        </div>
+
+        <div class="section">
+            <label>Tag Filter <span style="font-weight:400; text-transform:none">(only return these)</span></label>
+            <div class="tag-input-row">
+                <input type="text" id="tagInput" placeholder="Add a tag...">
+                <button class="btn-small" id="addTagBtn">Add</button>
+            </div>
+            <div class="tag-pills" id="tagPills"></div>
+        </div>
+
+        <!-- Person Recognition Section -->
+        <div class="section recognition-section">
+            <label>Person Recognition</label>
+
+            <div class="ref-folder-row">
+                <input type="text" id="refFolderPath" placeholder="Eagle folder name (e.g., References)">
+            </div>
+            <div class="model-hint">Create subfolders per person with reference images inside</div>
+
+            <div class="ref-status" id="refStatus">No references loaded</div>
+
+            <!-- Recognition Mode -->
+            <div class="row" style="margin-bottom: 12px;">
+                <div class="section" style="flex: 1; margin-bottom: 0;">
+                    <label for="recognitionMode">Mode</label>
+                    <select id="recognitionMode">
+                        <option value="ensemble">Ensemble (Best)</option>
+                        <option value="clip">CLIP Only</option>
+                        <option value="face">Face Only</option>
+                    </select>
+                </div>
+                <div class="section" style="flex: 1; margin-bottom: 0;">
+                    <label>Match Threshold: <span id="thresholdValue">0.75</span></label>
+                    <input type="range" id="matchThreshold" min="0.40" max="0.95" step="0.05" value="0.75" style="width: 100%;">
+                </div>
+            </div>
+
+            <!-- Advanced Settings Toggle -->
+            <div class="advanced-toggle" id="advancedToggle">
+                <span class="arrow">&#9654;</span> Advanced Settings
+            </div>
+
+            <!-- Advanced Settings Panel -->
+            <div class="advanced-panel" id="advancedPanel">
+                <div class="advanced-row" id="faceThresholdRow">
+                    <label>
+                        <span class="adv-label">Face Threshold</span>
+                        <span class="adv-value" id="faceThresholdValue">0.55</span>
+                    </label>
+                    <input type="range" id="faceThreshold" min="0.30" max="0.80" step="0.05" value="0.55">
+                    <span class="adv-hint">Lower = more matches, higher = stricter</span>
+                </div>
+
+                <div class="advanced-row" id="clipThresholdRow">
+                    <label>
+                        <span class="adv-label">CLIP Threshold</span>
+                        <span class="adv-value" id="clipThresholdValue">0.65</span>
+                    </label>
+                    <input type="range" id="clipThreshold" min="0.40" max="0.80" step="0.05" value="0.65">
+                    <span class="adv-hint">Visual similarity cutoff</span>
+                </div>
+
+                <div class="advanced-row" id="ensembleWeightRow">
+                    <label>
+                        <span class="adv-label">Face Weight</span>
+                        <span class="adv-value" id="faceWeightValue">70%</span>
+                    </label>
+                    <input type="range" id="faceWeight" min="0" max="100" step="10" value="70">
+                    <span class="adv-hint">Face vs CLIP balance (CLIP = <span id="clipWeightValue">30%</span>)</span>
+                </div>
+
+                <div class="advanced-row" id="videoFramesRow">
+                    <label style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="adv-label">Video Frames</span>
+                        <span class="adv-value" id="videoFramesValue">5</span>
+                    </label>
+                    <input type="range" id="videoFrames" min="3" max="20" step="1" value="5">
+                    <span class="adv-hint">More frames = better accuracy but slower</span>
+                </div>
+
+                <div class="advanced-row" id="skipTaggedRow">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="skipTagged" checked style="width: auto; margin: 0;">
+                        <span class="adv-label">Skip Already Tagged</span>
+                    </label>
+                    <span class="adv-hint">Skip items that already have a person.* tag</span>
+                </div>
+
+                <div class="advanced-row" id="replaceTagsRow">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="replaceTags" style="width: auto; margin: 0;">
+                        <span class="adv-label">Replace Existing Tags</span>
+                    </label>
+                    <span class="adv-hint">Remove old person.* tags when adding new ones</span>
+                </div>
+
+                <div class="advanced-row" id="ignoreTagsRow">
+                    <label>
+                        <span class="adv-label">Ignore Tags</span>
+                    </label>
+                    <span class="adv-hint">Skip items with these tags (e.g., animation, artwork)</span>
+                    <div class="ignore-tags-input">
+                        <input type="text" id="ignoreTagInput" placeholder="Add tag to ignore...">
+                        <button class="btn-small" id="addIgnoreTagBtn">Add</button>
+                    </div>
+                    <div class="ignore-tag-pills" id="ignoreTagPills"></div>
+                </div>
+
+                <div class="advanced-row" id="debugRow">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="debugMode" style="width: auto; margin: 0;">
+                        <span class="adv-label">Debug Mode</span>
+                    </label>
+                    <span class="adv-hint">Save aligned faces & comparison data to debug folder</span>
+                </div>
+            </div>
+
+            <div class="ref-progress" id="refProgress">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="refProgressFill"></div>
+                </div>
+                <div class="progress-status" id="refProgressStatus">Loading...</div>
+            </div>
+
+            <div class="recognition-buttons">
+                <button class="btn-small" id="loadRefsBtn">Load References</button>
+                <button class="btn-small btn-danger" id="clearCacheBtn" title="Clear cached embeddings and force full rebuild">Clear Cache</button>
+                <button class="btn-secondary" id="identifyBtn" disabled style="flex:2">Identify People</button>
+            </div>
+        </div>
+
+        <button class="btn-primary" id="startBtn">Tag Selected Items</button>
+        <button class="btn-secondary" id="convertBtn">Convert .ts to .mp4</button>
+        <button class="btn-stop" id="stopBtn">Stop Processing</button>
+
+        <div class="confirm-panel" id="confirmPanel">
+            <div class="confirm-title">Delete original .ts files?</div>
+            <div class="confirm-list" id="confirmList"></div>
+            <div class="confirm-actions">
+                <button class="btn-primary" id="confirmDeleteBtn">Delete Originals</button>
+                <button class="btn-small" id="confirmKeepBtn">Keep Both</button>
+            </div>
+        </div>
+
+        <div class="progress-panel" id="progressPanel">
+            <div class="progress-header">
+                <span class="count" id="progressCount">0 / 0</span>
+                <span class="speed" id="progressSpeed"></span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-status" id="progressStatus">Starting...</div>
+        </div>
+
+        <div class="summary-panel" id="summaryPanel">
+            <div class="summary-title">Session Summary</div>
+            <div class="summary-stats">
+                <div class="stat-box success">
+                    <div class="number" id="sumSuccess">0</div>
+                    <div class="label">Tagged</div>
+                </div>
+                <div class="stat-box errors">
+                    <div class="number" id="sumErrors">0</div>
+                    <div class="label">Errors</div>
+                </div>
+                <div class="stat-box skipped">
+                    <div class="number" id="sumSkipped">0</div>
+                    <div class="label">Skipped</div>
+                </div>
+            </div>
+            <div id="tagCloudSection" style="display:none">
+                <div class="summary-tags-title">Top Tags Applied</div>
+                <div class="tag-cloud" id="tagCloud"></div>
+            </div>
+            <div class="summary-time" id="sumTime"></div>
+        </div>
+
+        <div class="log-section">
+            <div class="log-toggle" id="logToggle">
+                <span class="arrow">&#9654;</span> Debug Log
+            </div>
+            <div class="log-content" id="logContent">
+                <div class="current-item-preview" id="currentItemPreview">
+                    <img id="currentItemThumb" src="" alt="">
+                    <div class="current-item-info">
+                        <div class="current-item-name" id="currentItemName">-</div>
+                        <div class="current-item-status" id="currentItemStatus">Waiting...</div>
+                    </div>
+                </div>
+                <div id="logArea"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/plugin.js"></script>
+</body>
+</html>
